@@ -1,0 +1,2559 @@
+					GraphQL
+
+Contents:
+
+1.GraphQL fundamentals
+2.GraphQL implementations on java
+   -Spring Boot -graphql-java--Netflix dgs framework
+3.Federation using Appllo server
+
+What is GraphQL?
+
+ GraphQL is new API standard that provides efficient and flexible  way of getting and sending data over network.
+
+How to distribute data in distributed computing(monolithic/microservices)?
+
+In the Network :internet how to distribute data across the different machines and systems.
+  Web : System where we can distribute data over internet.
+
+Web 1 stage : 1989 -to 1995 - web distribtuted data in the form of documents(HTML) -Static web pages.
+
+Web 2 Stage : 1995 to tilldate : Dynamic content generation technology
+   -Program which queries data from the database/datasource, prepares html documents onfly.
+-CGI - C,Perl
+-SUN - J2EE based on java language - web container was JRE- Servlet
+-Microsoft - ASP
+-PHP
+
+Web 3 Stage : 1996 --- till date : BtoB integration- ECommerce
+
+WebServices:
+  Program which distributes data not html doc.
+
+Data interchange format: xml,json,txt........
+
+XML was proposed major data interchange format.
+
+Based on XML Webservices were implemented- 
+   SOAP Web Services
+   SOA Arch based XML web services : XML based microservices...
+
+Web 4 State : 2005 to till date : Bto B integration and mobility computing.
+
+REST: Representational state Transfer : Spec /Theory
+
+ Talks about how to build distribtued system to distribute data over internet(http) in form of multiple different data formats.
+
+REStFull WebServices:
+  It is implementation based on REST spec how to distribute data in different forms.
+JSON become defacto standard in distributing data over internet.
+  
+Common Idea/characteristics of RESTFull web Services:
+
+1.Data Fetching:
+   Data is fetched via URI.
+   Each Resource(data Representation) which represents biz domain.
+    User,Product,LineItem,.....
+
+/api/products => list of products
+/api/products/1 => get single product
+/api/products/1/reviews/ get review of product 1
+
+/api/products:
+ { 
+   id
+   name
+   imageurl
+   stock
+   qty
+   price
+   .......
+ }
+..............................................................................................
+			       Technologies/Methodlogies which expose data 
+
+1.RPC
+
+2.WebServices
+   -Soap
+   -REST
+   -GRAPHQL
+
+GraphQL was developed to solve the drawback of RESTFull webservices but not replacement.
+............................................................................................
+			
+What is Graph?
+  It is every where , you are part of graph,every thing is connected via some relationship which forms graph.
+  Collection of nodes and its relationship.
+  Each node has properties.
+
+Object oriented Programming express this idea in the form of "Hierachy theory" - HAS-a .
+
+What is QL?
+ Query language.
+SQL     - Structured Query Language
+  SQL used to read and manipulate data in database,during sql read, we can select single or mulitple columns, as we need , we may query one table or many tables.
+
+GraphQL - graph Query Lanaguage
+  In the same way GraphQl also queries data from the "connected Structure"
+
+What is GraphQL?
+ 
+ IT is language or spec which uses a concept of graph and query language to access and mutate data.
+ 
+GraphQL implemntations:
+
+GraphQL is platform and language indepandent.
+
+Java :
+ graphql-java
+ Spring-graphql
+ DGSFramework for SpringBoot.
+..............................................................................................
+				   GraphQL CORE Spec
+..............................................................................................
+
+There are two actors in GraphQL:
+
+1.GraphQL Service Provider  - server side apps
+2.GraphQL Consumer/Clients-  Can be mobile apps,Browser apps(react,angular),testing clients
+
+GraphQL provides two sub set language:
+
+1.GraphQL Query Language  - client side
+2.GraphQL Schema Language - Server side
+
+
+..............................................................................................
+			  GraphQL request and response model.
+
+
+Declarative Programming:
+
+What you write, you have to get the same structure.
+
+The Queryql request is more readable,declarative. WHich micics the javascript object literal syntax.
+
+js object:
+
+ let user =  {
+     id:1,
+     name:'joe'
+     friends: [
+        'bar','foo'
+     ]
+  } 
+
+GraphQL Request payload : GraphQL Query
+.......................................
+
+GraphQL Client 
+
+  {
+     id
+     name
+     friends { -----------------------------> GraphQLServer
+        name
+     }
+  } 
+
+Response:JSON
+ {
+     "id":1,
+     "name":"joe"
+     "friends": [      <----------------------------- GraphQLServer
+        "bar","foo"
+     ]
+  } 
+
+..............................................................................................
+				 REST AND CURD
+
+Operations Type
+
+GET ------Read
+POST -----CREATE
+PUT ------UPDATE
+DELETE----Remove
+.............................................................................................
+				GRAPHQL And CURD
+
+
+GraphQL uses only URL which exposes Service
+
+
+  {
+     id
+     name
+     friends { -----------HTTP POST------------------> GraphQLServer
+        name
+     }
+  } 
+
+Operation Types:
+
+1.Query
+  read
+2.mutation
+  create,update,delete
+3.subscription
+   Streaming
+
+query - a read only fetch
+mutation- a write followed by read
+subscription- a long live request that fetches data in response to source events
+..............................................................................................
+
+Core concepts in Request (Query):
+.........................
+
+1.selection set
+
+ selectionSet : { Selection }
+
+Selection:
+ -fields
+ -Fragement Spread
+ -lnline fragement.
+
+ { 
+  firstname
+  lastname
+  age
+ }
+
+Selection set to be selected by somebody(Operation)
+
+An Operation selects the set of information it needs, exactly will receive that information
+
+Operation and Selection Set
+
+query {
+ firstname
+  lastname
+  age
+}
+mutation createUser(params){
+  user
+}
+subscription getPriceQuote(params) {
+ price
+ name
+}
+..................
+
+Fields: 
+
+Are properties of an object.
+
+{
+ person {
+   name
+ }
+}
+
+{
+  "data": {
+    "person" : {
+      "name": "Subramaian"
+    }
+  }
+}
+
+Here name is field returns data with String Type
+
+
+Fields are dyamic:
+.................
+
+{
+ person {
+   name
+ }
+ contacts {
+   name
+ }
+}
+
+{
+  "data": {
+    "person" : {
+      "name": "Subramaian"
+    },
+    "contacts": [{"name":"foo"},{"name":bar"} ]
+  }
+}
+
+fields are more dynamic:
+........................
+{
+ person {
+   name
+ }
+ brithday {
+   day
+   month
+ }
+ contacts {
+   name
+ }
+}
+	.....................................................................
+
+					Arguments:
+.........................................................................................
+
+field (arg:value) {
+
+   field
+}
+
+{
+  user(id:1) {
+    id
+    name
+    profilePic(height:100,width:100)
+  }
+}
+.........................................................................................
+				  Field Aliases
+..........................................................................................
+
+Without aliases:
+
+{ 
+
+ user(id:1) {
+    id
+    name
+ }
+
+}
+
+{
+  "data": {
+    "user" : {
+      "id" :1
+      "name": "Subramaian"
+    }
+  }
+}
+
+{ 
+
+ subu:user(id:1) {
+    id
+    name
+ }
+
+}
+With aliases:
+{
+  "data": {
+    "subu" : {
+      "id" :1
+      "name": "Subramaian"
+    }
+  }
+}
+..............................................................................................
+				  Fragments: Resuable SelectionSet
+..............................................................................................
+
+Without Fragment:
+.................
+
+{
+ user(id:4) {
+
+  friends {
+    id
+    name
+    pic
+  }
+  mutualfriends {
+    id
+    name
+    pic
+  }
+ }
+
+}
+
+With Fragment:
+.................
+
+{
+  user(id:4) {
+
+  friends {
+    ...friendsFields
+  }
+  mutualfriends {
+   ...friendsFields
+  }
+ }
+
+}
+fragement friendsFields on User {
+  id
+  name
+  pic
+}
+.............................................................................................
+				  Dynamic Arguments-Variables
+..............................................................................................
+
+Query can be paramertized with variables, maximizing query reuse
+
+Syntax:
+   $variableName
+
+{
+  getProfile($id:Int){
+    user {
+      name
+      pic
+    }
+  }
+}
+
+How to pass variable 
+{"id" : 5 }
+{"id" : 6 }
+
+Variable default Value
+
+{
+  getProfile($id:Int=2){
+    user {
+      name
+      pic
+    }
+  }
+}
+
+more variables
+{
+  getProfile($id:Int,$withFriends:Boolean=false){
+    user {
+      name
+      pic  
+    }
+  }
+}
+{"id" : 5 ,"withFriends":false}
+..............................................................................................
+				 Directives : control flow
+
+@include(if:Boolean)
+@skip(if:Boolean)
+
+{
+  getProfile($id:Int,$withFriends:Boolean=false){
+    user {
+      name
+      pic  
+      friends @include(if:$withFriends)   {
+	name
+      }
+    }
+  }
+}
+{"id" : 5 ,"withFriends":true}
+.............................................................................................
+				 Server Side Design
+				Schema Defintion language
+..............................................................................................
+
+GraphQL Development Components:
+
+1.schema defintion 
+   schema.graphqls
+2.Domain models 
+3.Data Fetcher
+  
+
+How to start Graphql apps?
+
+1.Schema driven
+   write schema first 
+   schema is written based on biz use case like apis and data struture
+   
+2.Model driven
+   create models(POJOS) , based on Model , we can create Schema
+
+SDL Core concepts:
+
+Every Schema which starts with Root Type- Schema
+Schema is just Object
+
+General Syntax
+type typeName {
+  field:Type
+}
+
+eg:
+Core Type:
+
+type schema {
+  query:Query
+  mutation:Mutation
+  subscription:Subscription
+}
+
+type Query {
+  greet:String
+  name:String
+}
+
+Data Types:
+1.scallar types : Primitives
+
+1.Int -  32 bit signed integer
+2.String - UTF-8 char sequence
+3.Boolean - true or  false
+4.Float - singed double precision floating point value
+5.ID - which represents uniquie identifer, used to fetch object ,
+........
+Advanced Types
+
+1.enum - special scalar that is holding particular set of allowed values.
+
+
+2.Custom Type/Complex Type
+
+type Query {
+   peron:Person
+}
+//complex Type
+
+type Person {
+  id:ID
+  name:String
+  city:String
+  age:Int
+}
+...................
+API may return data or not.
+
+With data
+{
+ name  ----> {"name":"foo"  }
+}
+{
+ name  ----> {"name":null  }
+}
+
+How to enforce the field must have data?
+ =>not null
+
+type Person {
+  id:ID
+  name:String!
+  city:String
+  age:Int
+}
+  name:String! 
+ here we are marking it is as non-null by adding an exclamation mark.
+
+.......................................................................................
+				  Parametermized api
+
+
+type Query{
+  filterByCity(city:String):Person
+}
+
+type Person {
+  id:ID
+  name:String!
+  city:String
+  age:Int
+}
+..............................................................................................
+				How to return collection /List of Data
+
+
+type Query{
+  findAllPersons():[Person]!
+}
+
+type Person {
+  id:ID
+  name:String!
+  city:String
+  age:Int
+}
+............................................................................................
+				 Interfaces
+
+Interface is an abstract common type which can be reused by other types
+
+interface Human {
+  id:ID
+  name:String!
+  city:String
+  age:Int
+}
+
+type Player implements Human {
+  id:ID
+  name:String!
+  city:String
+  age:Int
+  teams:[Team]
+}
+
+type Employee implements Human {
+  id:ID
+  name:String!
+  city:String
+  age:Int
+  
+}
+........................................................................................
+				Union Types
+
+A variable can hold possible list of types
+
+union userId = String | Int
+
+............................................................................................
+				Input Types
+
+This is very usefull in mutations for getting input 
+
+input Person {
+ name:String
+ city:String
+}
+.............................................................................................
+
+Mutation:
+
+
+input User {
+ name:String
+ city:String
+}
+
+mutation createUser($user:User!) {
+
+}
+..............................................................................................
+				GraphQL implementation
+..............................................................................................
+
+Java:
+
+-graphql-java -  Spring Boot integration
+-Domain Graph Service (DGS) Framework - Abstraction on => Spring Boot + graphql java
+
+
+Graphql-java:
+
+-> Provide compresensive spring boot configuration to customize graphql java server.
+-> Auto detec schema files  - src/main/resources/filename.graphqls - where we can write schema    defintions
+-> Resolvers : Are apis to resolve query,mutation,nested queries
+  ->GraphQLQueryResolover - type Query{}
+  ->GraphQLMutationResolover - type mutation {}
+  ->GraphQLResolover<T> -  nested Data.
+
+->How to test graphql end points
+   ->graphiql,postman....
+
+Basic Graphl-Java Project with SpringBoot.
+
+Project layout
+
+Schema design:
+src/main/resources/schema.graphqls
+
+type Query {
+    bookById(id: ID): Book
+    listAllAuthors()
+}
+
+type Book {
+    id: ID
+    name: String
+    pageCount: Int
+    author: Author
+}
+
+type Author {
+    id: ID
+    firstName: String
+    lastName: String
+}
+
+..........................................................................................
+
+Client Query :
+
+parent
+{
+  bookById(id: "book-1"){
+    id
+    name
+    pageCount
+  -child
+    author {
+      firstName
+      lastName
+    }
+  }
+}
+
+How to define nested object with parent object
+
+Establishing relationship between parent and child 
+
+graphql.schema.DataFetchingEnvironment
+
+dataFetchingEnvironment.getSource() - To get Parent Object
+..............................................................................................
+				 DGS FRAMEWORK
+..............................................................................................
+
+DGS is Netflix Graphql java Abstraction on top of graphql-java.
+
+Features
+=> Dont provide Spring boot based configuration.
+=> Auto scan of schema files
+=> Annotation driven
+    @DgsComponent
+    @DgsQuery - method level annotation for querying data
+    @DgsMutation - method level annotation for mutating data
+    @DgsData - nested Object reterival
+=> provide integration with UI tool called "graphiQL".
+
+
+#schema defintion
+type Query {}
+
+type Mutation {}
+
+type Subscription {}
+
+Query :
+
+=>must have apis 
+#query methods goes here
+#nameoftheapi:ReturnType
+
+ReturnType:
+ Data types
+
+1.scallar - primitive
+Int: A signed 32‐bit integer.
+Float: A signed double-precision floating-point value.
+String: A UTF‐8 character sequence.
+Boolean: true or false.
+
+Advanced Scallar
+enum
+..
+2.Object types
+
+Object - Product,Stock
+Interface
+Union
+List
+
+3.Custom Scallar type: we can create our own types based on language.
+
+..........................................
+#schema defintion
+
+type Query {
+    hello:String
+}
+
+Implementation:
+
+DGS provides annotation to implement schema api logic. 
+Conventionaly which is called DataFetcher bean
+
+@DgsComponent
+
+import com.netflix.graphql.dgs.DgsComponent;
+
+@DgsComponent
+public class HelloDataFetcher {
+   
+}
+
+api implementation.
+
+@DgsQuery
+@DgsData
+
+Both annotation is same purpose but some differences are there.
+
+type Query {
+    #query methods goes here
+    #nameoftheapi:ReturnType
+    hello:String
+}
+ @DgsQuery
+    public String hello(){
+        return "Hello";
+    }
+
+here @DgsQuery will map to "hello" to hello
+
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsQuery;
+
+@DgsComponent
+public class HelloDataFetcher {
+    //schema methods
+    @DgsQuery
+    public String hello(){
+        return "Hello";
+    }
+}
+
+Run the application
+open the browser and test
+http://localhost:8080/graphiql
+
+{
+  hello
+}
+
+{
+  "data": {
+    "hello": "Hello"
+  }
+}
+..............................................................................................
+	 Use case : what if schema field name and method name is different
+
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsQuery;
+
+@DgsComponent
+public class HelloDataFetcher {
+    //schema methods
+//    @DgsQuery
+//    public String hello(){
+//        return "Hello";
+//    }
+    @DgsQuery(field = "hello")
+    public String sayHello(){
+        return "Hello";
+    }
+}
+..............................................................................................
+			           @DgsData Annotation
+
+
+=>Similar to @DgsQuery annotation
+=>has parent type and field type 
+=>Usefull when we request nested data.
+
+ParentType:
+ The immediate parent of "field".
+
+type Query {
+    hello:String
+}
+here hello is field who is parent? "Query"
+
+    @DgsData(parentType = "Query")
+    public String hello() {
+        return "Hello";
+    }
+
+Use case : what if schema field name and method name is different
+   @DgsData(parentType = "Query",field = "hello")
+    public String sayHello() {
+        return "Hello";
+    }
+.............................................................................................
+				Not Null - non Null
+.............................................................................................
+type Query {
+    #nonnull
+    message:String!
+}
+
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsQuery;
+
+@DgsComponent
+public class MessageNonNullDataFetcher {
+
+    @DgsQuery(field = "message")
+    public String sayHello() {
+        return null;
+    }
+}
+{
+  message
+}
+
+{
+  "errors": [
+    {
+      "message": "The field at path '/message' was declared as a non null type, but the code involved in retrieving data has wrongly returned a null value.  The graphql specification requires that the parent field be set to null, or if that is non nullable that it bubble up null to its parent and so on. The non-nullable type is 'String' within parent type 'Query'",
+      "path": [
+        "message"
+      ],
+      "extensions": {
+        "classification": "NullValueInNonNullableField"
+      }
+    }
+  ],
+  "data": null
+}
+
+if there is non null, api gives us clear error message.
+
+
+..............................................................................................
+
+#schema defintion
+
+type Query {
+     #built in scallars
+    count:Int
+    qty:Float
+    isAvailable:Boolean
+    id:ID
+}
+
+
+
+package com.hcl.dgs.data.fetcher;
+
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsQuery;
+
+@DgsComponent
+public class BuiltInScallarFetcher {
+    //int
+    @DgsQuery(field = "count")
+    public Integer getCount() {
+        return 1;
+    }
+
+    @DgsQuery(field = "qty")
+    public Float getQty() {
+        return 10.9f;
+    }
+
+    @DgsQuery(field = "isAvailable")
+    public boolean isAvailable() {
+        return true;
+    }
+
+    //id
+    @DgsQuery(field = "id")
+    public String getId() {
+        return "1";
+    }
+}
+..............................................................................................						Enums
+
+schema
+type Query {
+    status:Availability
+}
+enum Availability {
+    INSTOCK
+    OUTOFSTOCK
+    NOTSOLD
+}
+
+..
+package com.hcl.dgs.data.model;
+
+public enum Availability {
+    INSTOCK,
+    OUTOFSTOCK,
+    NOTSOLD
+}
+
+   //enum
+    @DgsQuery(field = "status")
+    public Availability checkAvailable() {
+        return Availability.OUTOFSTOCK;
+    }
+............................................................................................
+					Object Types
+..............................................................................................
+
+#Object type
+type Query {
+    actor:Actor
+}
+#object type
+type Actor {
+    id:ID
+    name:String
+    age:Int
+}
+Models
+package com.hcl.dgs.data.model;
+
+public class Actor {
+    private String id;
+    private String name;
+    private Integer age;
+
+    public Actor(String id, String name, Integer age) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+}
+
+import com.hcl.dgs.data.model.Actor;
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsQuery;
+
+@DgsComponent
+public class SimpleObjectFetcher {
+
+    @DgsQuery(field = "actor")
+    public Actor findActor() {
+        return new Actor("1", "Dodge", 34);
+    }
+}
+
+{
+  actor {
+    id
+    name
+    age
+  }
+}
+{
+  "data": {
+    "actor": {
+      "id": "1",
+      "name": "Dodge"
+    }
+  }
+}
+.............................................................................................
+					Nested Object Linking
+
+
+#Object type
+type Query {
+    actor:Actor
+}
+#object type
+type Actor {
+    id:ID
+    name:String
+    age:Int
+    address:Address
+}
+type Address {
+    city:String
+    state:String
+    country:String
+}
+package com.hcl.dgs.data.fetcher;
+
+import com.hcl.dgs.data.model.Actor;
+import com.hcl.dgs.data.model.Address;
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsData;
+import com.netflix.graphql.dgs.DgsQuery;
+
+@DgsComponent
+public class ActorDataFetcher {
+
+    @DgsQuery(field = "actor")
+    public Actor findActor() {
+        Actor actor1 = new Actor("3","t",33);
+          return new Actor("1", "Dodge", 34);
+        //return new Actor("1", "Dodge", 34, new Address("Coimbatore", "TN", "IN"));
+    }
+    @DgsData(parentType = "Actor", field = "address")
+    public Address findAddress() {
+        return new Address("Coimbatore", "TN", "IN");
+    }
+}
+
+package com.hcl.dgs.data.model;
+
+public class Actor {
+    private String id;
+    private String name;
+    private Integer age;
+    private Address address;
+
+    public Actor(String id, String name, Integer age) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+    }
+
+    public Actor(String id, String name, Integer age, Address address) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.address = address;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+}
+
+package com.hcl.dgs.data.model;
+
+public class Address {
+    private String city;
+    private String state;
+    private String country;
+
+    public Address(String city, String state, String country) {
+        this.city = city;
+        this.state = state;
+        this.country = country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+}
+...........................................................................................
+				Parameters and Args
+...........................................................................................
+type Query {
+    message(input:String):String
+}
+package com.hcl.dgs.data.fetcher;
+
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsQuery;
+import com.netflix.graphql.dgs.InputArgument;
+
+@DgsComponent
+public class MessageParamDataFetcher {
+
+    @DgsQuery(field = "message")
+    public String getMessage(@InputArgument String input) {
+        return input;
+    }
+}
+{
+  message(input: "Hello") 
+}
+{
+  "data": {
+    "message": "Hello"
+  }
+}
+
+Request: dynamic parameters
+
+query Messages($input: String) {
+  message(input: $input) 
+}
+{
+  "input": "HI"
+}
+
+{
+  "data": {
+    "message": "HI"
+  }
+}
+............................................................................................
+					Fragement
+
+
+type Query {
+    showHero(id:ID,name:String,age:Int):Actor
+    showVillain(id:ID,name:String,age:Int):Actor
+}
+type Actor {
+    name:String
+    age:Int
+    id:ID
+    address:Address
+}
+type Address {
+    city:String
+    state:String
+    country:String
+}
+
+package com.hcl.dgs.data.fetcher;
+
+
+import com.hcl.dgs.data.model.Actor;
+import com.hcl.dgs.data.model.Address;
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsQuery;
+import com.netflix.graphql.dgs.InputArgument;
+
+@DgsComponent
+public class FragementDataFetcher {
+
+    @DgsQuery(field = "showHero")
+    public Actor findActor(@InputArgument String id, @InputArgument String name, @InputArgument Integer age) {
+        System.out.println(id + " " + name);
+        return new Actor(id, name, age, new Address("New york", "New York", "USA"));
+    }
+
+    //fragments
+    @DgsQuery(field = "showVillain")
+    public Actor findVillain(@InputArgument String id, @InputArgument String name, @InputArgument Integer age) {
+        System.out.println(id + " " + name);
+        return new Actor(id, name, age, new Address("New york", "New York", "USA"));
+    }
+
+}
+package com.hcl.dgs.data.model;
+
+public class Actor {
+    private String id;
+    private String name;
+    private Integer age;
+    private Address address;
+
+    public Actor(String id, String name, Integer age) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+    }
+
+    public Actor(String id, String name, Integer age, Address address) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.address = address;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+}
+
+....
+request
+
+query HerosAndVillian($id: ID = "00", $name: String = "", $age: Int = 0) {
+  hero: showHero(id: $id, name: $name, age: $age) {
+    ...commonFields
+  }
+  villain: showVillain(id: $id, name: $name, age: $age) {
+    ...commonFields
+  }
+}
+
+fragment commonFields on Actor {
+  id
+  name
+  age
+  address {
+    city
+  }
+}
+query variables:
+{
+  "id": 1,
+  "name": "subramaian",
+  "age": 34
+}
+
+{
+  "data": {
+    "hero": {
+      "id": "1",
+      "name": "subramaian",
+      "age": 34,
+      "address": {
+        "city": "New york"
+      }
+    },
+    "villain": {
+      "id": "1",
+      "name": "subramaian",
+      "age": 34,
+      "address": {
+        "city": "New york"
+      }
+    }
+  }
+}
+..............................................................................................
+				Interfaces and Unions
+..............................................................................................
+type Query {
+    video: Video
+}
+
+interface Video {
+    title: String
+}
+
+type Movie implements Video {
+    title: String
+    length:String
+}
+
+type Show implements Video {
+    title: String
+    seasons: Int
+}
+....................
+
+package com.hcl.dgs.data.model;
+
+public interface Video {
+    public String getTitle();
+}
+
+package com.example.graphql.models;
+
+public interface Video {
+    public String getTitle();
+}
+package com.example.graphql.models;
+
+public class Show implements  Video {
+    private String title;
+    private Integer seasons;
+
+    public Show(String title, Integer seasons) {
+        this.title = title;
+        this.seasons = seasons;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Integer getSeasons() {
+        return seasons;
+    }
+}
+package com.example.graphql.models;
+
+public class Movie implements Video {
+    private String title;
+    private String length;
+
+    public Movie(String title, String length) {
+        this.title = title;
+        this.length = length;
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getLength() {
+        return length;
+    }
+
+    public void setLength(String length) {
+        this.length = length;
+    }
+}
+....
+package com.hcl.dgs.data.fetcher;
+
+import com.hcl.dgs.data.model.Movie;
+import com.hcl.dgs.data.model.Show;
+import com.hcl.dgs.data.model.Video;
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsQuery;
+
+@DgsComponent
+public class VideoDataFetcher {
+
+    @DgsQuery(field = "video")
+    public Video showVideo(){
+        //return new Show("BigBoss",5);
+        return new Movie("The Matrix","150");
+    }
+
+}
+request
+{
+  movies: video {
+    __typename
+    title
+  }
+}
+
+{
+  "data": {
+    "movies": {
+      "__typename": "Movie",
+      "title": "The Matrix"
+    }
+  }
+}
+
+Type Resolvers:
+
+
+
+The above Resolver function is not needed if schema type and model type is same.
+
+eg:
+type Movie {} === class Movie
+type Show  {} === class Show
+
+Incase schema type and class Type is different : we need explicit type resolvers
+
+
+public class Series implements  Video {
+    private String title;
+    private Integer seasons;
+
+    public Series(String title, Integer seasons) {
+        this.title = title;
+        this.seasons = seasons;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Integer getSeasons() {
+        return seasons;
+    }
+}
+..............
+package com.hcl.dgs.data.fetcher;
+
+import com.hcl.dgs.data.model.Movie;
+import com.hcl.dgs.data.model.Series;
+import com.hcl.dgs.data.model.Video;
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsQuery;
+import com.netflix.graphql.dgs.DgsTypeResolver;
+
+@DgsComponent
+public class VideoDataFetcher {
+
+    @DgsQuery(field = "video")
+    public Video showVideo() {
+        //return new Show("BigBoss",5);
+        // return new Movie("The Matrix", "150");
+        return new Series("BigBoss", 5);
+    }
+
+    //Default Type Resolver
+    // type resolver :"Video" is interface Name
+//    @DgsTypeResolver(name = "Video")
+//    public String resolveVideoType(Video video) { //Video is Java Type
+//        if (video instanceof Movie) {
+//            return "Movie"; //schema Type Name
+//        } else if (video instanceof Show) {
+//            return "Show"; // schema Type Name
+//        } else {
+//            throw new RuntimeException("UnKnown Type" + video.getClass().getName());
+//        }
+//    }
+
+    //if schema name and model name is different
+    @DgsTypeResolver(name = "Video")
+    public String resolveVideoType(Video video) { //Video is Java Type
+        if (video instanceof Movie) {
+            return "Movie"; //schema Type Name
+        } else if (video instanceof Series) {
+            return "Show"; // schema Type Name
+        } else {
+            throw new RuntimeException("UnKnown Type" + video.getClass().getName());
+        }
+    }
+}
+.............................................................................................
+					Unions
+
+Unions and interfaces are same : Act as base Type for different implementations
+
+interfaces will have common field where as unions are not, just for keeping common type.
+
+
+type Query {
+    firstSearchResult: SearchResult
+}
+union SearchResult = Photo | Person
+
+type Person {
+    name: String
+    age: Int
+}
+
+type Photo {
+    height: Int
+    width: Int
+}
+...
+package com.hcl.dgs.data.model;
+
+public interface SearchResult {
+}
+package com.hcl.dgs.data.model;
+
+public class Person implements SearchResult {
+    private String name;
+
+    private Integer age;
+
+    public Person() {
+    }
+
+    public Person(String name, Integer age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+}
+package com.hcl.dgs.data.model;
+
+public class Photo implements SearchResult {
+    private Integer height;
+
+    private Integer width;
+
+    public Photo() {
+    }
+
+    public Photo(Integer height, Integer width) {
+        this.height = height;
+        this.width = width;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+
+}
+
+package com.hcl.dgs.data.fetcher;
+
+import com.hcl.dgs.data.model.Person;
+import com.hcl.dgs.data.model.Photo;
+import com.hcl.dgs.data.model.SearchResult;
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsQuery;
+import com.netflix.graphql.dgs.DgsTypeResolver;
+
+@DgsComponent
+public class SearchDataFetcher {
+    @DgsQuery(field = "firstSearchResult")
+    public SearchResult search() {
+        //return new Person ("The Alien", 10);
+        return new Photo(100, 900);
+    }
+
+    @DgsTypeResolver(name = "SearchResult")
+    public String resolveUnionType(SearchResult video) { //SearchResult is Java Type
+        if (video instanceof Person) {
+            return "Person"; //schema Type Name
+        } else if (video instanceof Photo) {
+            return "Photo"; // schema Type Name
+        } else {
+            throw new RuntimeException("UnKnown Type" + video.getClass().getName());
+        }
+
+    }
+}
+
+
+Request:
+{
+  firstSearchResult {
+    __typename
+    ... on Person {
+      name
+    }
+    ... on Photo {
+      height
+      width
+    }
+  }
+}
+
+Response:
+{
+  "data": {
+    "firstSearchResult": {
+      "__typename": "Photo",
+      "height": 100,
+      "width": 900
+    }
+  }
+}
+..............................................................................................
+				Custom scalar  Types
+
+How to enchance graphql type system? or how to extend existing type system by adding domain specific types.
+
+
+scallar TypeName.
+
+Here we say TypeName is custom , how to tell to the backend program.
+
+
+type Query {
+    firstSearchResult: SearchResult
+}
+union SearchResult = Photo | Person
+
+type Person {
+    name: String
+    age: Int
+}
+
+type Photo {
+    height: Int
+    width: Int
+    pixel:Long
+}
+#custom scalar
+scalar  Long
+
+steps:
+
+pom.xml
+<dependency>
+			<groupId>com.netflix.graphql.dgs</groupId>
+			<artifactId>graphql-dgs-extended-scalars</artifactId>
+			<version>4.9.10</version>
+		</dependency>
+
+package com.hcl.dgs.custom.scalars;
+
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsRuntimeWiring;
+import graphql.scalars.ExtendedScalars;
+import graphql.schema.idl.RuntimeWiring;
+
+//you are binding of extendedschlar lib with our code
+@DgsComponent
+public class CustomExtendedScalars {
+    @DgsRuntimeWiring
+    public RuntimeWiring.Builder addScalar(RuntimeWiring.Builder builder) {
+        return builder.scalar(ExtendedScalars.GraphQLLong);
+    }
+}
+
+package com.hcl.dgs.data.model;
+
+public class Photo implements SearchResult {
+    private Integer height;
+
+    private Integer width;
+    private Long pixel;
+
+    public Photo() {
+    }
+
+    public Photo(Integer height, Integer width, Long pixel) {
+        this.height = height;
+        this.width = width;
+        this.pixel = pixel;
+    }
+
+    public Long getPixel() {
+        return pixel;
+    }
+
+    public void setPixel(Long pixel) {
+        this.pixel = pixel;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+
+}
+package com.hcl.dgs.data.fetcher;
+
+import com.hcl.dgs.data.model.Person;
+import com.hcl.dgs.data.model.Photo;
+import com.hcl.dgs.data.model.SearchResult;
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsQuery;
+import com.netflix.graphql.dgs.DgsTypeResolver;
+
+@DgsComponent
+public class SearchDataFetcher {
+    @DgsQuery(field = "firstSearchResult")
+    public SearchResult search() {
+        //return new Person ("The Alien", 10);
+        return new Photo(100, 900, 900L);
+    }
+
+    @DgsTypeResolver(name = "SearchResult")
+    public String resolveUnionType(SearchResult video) { //SearchResult is Java Type
+        if (video instanceof Person) {
+            return "Person"; //schema Type Name
+        } else if (video instanceof Photo) {
+            return "Photo"; // schema Type Name
+        } else {
+            throw new RuntimeException("UnKnown Type" + video.getClass().getName());
+        }
+
+    }
+}
+...........................................................................................
+
+How to add our own custom types?
+
+
+type Query {
+    firstSearchResult: SearchResult
+}
+union SearchResult = Photo | Person
+
+type Person {
+    name: String
+    age: Int
+}
+
+type Photo {
+    height: Int
+    width: Int
+    pixel: Long
+}
+#custom scalar
+scalar  Long
+#How to write our own custom types
+scalar  DateTime
+
+package com.hcl.dgs.custom.scalars;
+
+import com.netflix.graphql.dgs.DgsScalar;
+import graphql.language.StringValue;
+import graphql.schema.Coercing;
+import graphql.schema.CoercingParseLiteralException;
+import graphql.schema.CoercingParseValueException;
+import graphql.schema.CoercingSerializeException;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+@DgsScalar(name = "DateTime")
+public class DateTimeScalar implements Coercing<LocalDateTime, String> {
+    @Override
+    public String serialize(Object dataFetcherResult) throws CoercingSerializeException {
+        if (dataFetcherResult instanceof LocalDateTime) {
+            return ((LocalDateTime) dataFetcherResult).format(DateTimeFormatter.ISO_DATE_TIME);
+        } else {
+            throw new CoercingSerializeException("Not a valid DateTime");
+        }
+    }
+
+    @Override
+    public LocalDateTime parseValue(Object input) throws CoercingParseValueException {
+        return LocalDateTime.parse(input.toString(), DateTimeFormatter.ISO_DATE_TIME);
+    }
+
+    @Override
+    public LocalDateTime parseLiteral(Object input) throws CoercingParseLiteralException {
+        if (input instanceof StringValue) {
+            return LocalDateTime.parse(((StringValue) input).getValue(), DateTimeFormatter.ISO_DATE_TIME);
+        }
+
+        throw new CoercingParseLiteralException("Value is not a valid ISO date time");
+    }
+}
+
+
+package com.hcl.dgs.data.model;
+
+import java.time.OffsetDateTime;
+
+public class Person implements SearchResult {
+    private String name;
+
+    private Integer age;
+    private OffsetDateTime dob;
+
+    public Person() {
+    }
+
+    public Person(String name, Integer age, OffsetDateTime dob) {
+        this.name = name;
+        this.age = age;
+        this.dob = dob;
+    }
+
+    public OffsetDateTime getDob() {
+        return dob;
+    }
+
+    public void setDob(OffsetDateTime dob) {
+        this.dob = dob;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+}
+package com.hcl.dgs.data.fetcher;
+
+import com.hcl.dgs.data.model.Person;
+import com.hcl.dgs.data.model.Photo;
+import com.hcl.dgs.data.model.SearchResult;
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsQuery;
+import com.netflix.graphql.dgs.DgsTypeResolver;
+
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.Date;
+
+@DgsComponent
+public class SearchDataFetcher {
+    @DgsQuery(field = "firstSearchResult")
+    public SearchResult search() {
+        return new Person ("The Alien", 10, OffsetDateTime.now());
+        //return new Photo(100, 900, 900L);
+    }
+
+    @DgsTypeResolver(name = "SearchResult")
+    public String resolveUnionType(SearchResult video) { //SearchResult is Java Type
+        if (video instanceof Person) {
+            return "Person"; //schema Type Name
+        } else if (video instanceof Photo) {
+            return "Photo"; // schema Type Name
+        } else {
+            throw new RuntimeException("UnKnown Type" + video.getClass().getName());
+        }
+
+    }
+}
+............................................................................................
+				List
+
+#List
+type Query {
+    skills:[Skill]
+}
+type Skill {
+    id:ID
+    name:String
+}
+package com.hcl.dgs.data.fetcher;
+
+import com.hcl.dgs.data.model.Skill;
+import com.hcl.dgs.service.SkillService;
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+@DgsComponent
+public class SkillListDataFetcher {
+    @Autowired
+    private SkillService skillService;
+
+    @DgsQuery(field = "skills")
+    public List<Skill> showSkills() {
+        return skillService.findSkills();
+    }
+}
+package com.hcl.dgs.service;
+
+import com.hcl.dgs.data.model.Skill;
+import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.List;
+
+@Service
+public class SkillService {
+
+    //Todo: retervie this from jpa respository
+    private List<Skill> skills = Arrays.asList(new Skill("1", "GraphQl"),
+            new Skill("2", "Dgs"));
+
+    public List<Skill> findSkills() {
+        return skills;
+    }
+
+}
+package com.hcl.dgs.data.model;
+
+public class Skill {
+    private  String id;
+    private  String name;
+
+    public Skill(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+				Mutations and Subscription
+.............................................................................................
+
+#Mutation :Add,update,delete
+type Mutation {
+    addRating(input:RatingInput):Rating
+}
+input RatingInput {
+    title:String
+    starts:Int
+}
+type Rating {
+    avgStars:Int
+}
+
+package com.hcl.dgs.data.model;
+
+public class RatingInput {
+    private String title;
+    private Integer stars;
+
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Integer getStars() {
+        return stars;
+    }
+
+    public void setStars(Integer stars) {
+        this.stars = stars;
+    }
+}
+package com.hcl.dgs.data.model;
+
+public class Rating {
+    private String title;
+    private Integer avgStars;
+
+    public Rating(Integer avgStars) {
+        this.avgStars = avgStars;
+    }
+
+    public Rating(String title, Integer stars) {
+        this.title = title;
+        this.avgStars = stars;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Integer getStars() {
+        return avgStars;
+    }
+
+    public void setStars(Integer avgStars) {
+        this.avgStars = avgStars;
+    }
+}
+
+package com.hcl.dgs.data.mutation;
+
+import com.hcl.dgs.data.model.Rating;
+import com.hcl.dgs.data.model.RatingInput;
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsMutation;
+import com.netflix.graphql.dgs.InputArgument;
+
+@DgsComponent
+public class RatingMutation {
+
+    @DgsMutation(field = "addRating")
+    public Rating addRating(@InputArgument("input") RatingInput ratingInput) {
+        //biz logic to save rating into database
+        System.out.println("Rated :" + ratingInput.getTitle() + "with " + " " + ratingInput.getStars());
+        return new Rating(ratingInput.getStars());
+    }
+}
+
+Request:
+mutation Rating($input: RatingInput) {
+  addRating(input: $input) {
+    avgStars
+  }
+}
+{
+  "input": {
+    "title": "Matrix",
+    "stars": 5
+  }
+}
+Response:
+{
+  "data": {
+    "addRating": {
+      "avgStars": 5
+    }
+  }
+}
+..............................................................................................
+				 Subscriptions
+..............................................................................................
+
+RealTime Streaming :
+ How to push data from the server to client once the connection is established.
+
+How to implement?
+
+Server side : We can use Reactive Streams to stream data.
+Spring boot offers webflux wrapper to implement streaming programming.
+
+how to send data to clients
+
+Clients are webbrowsers,mobile clients or even other microservices.
+
+Graphql does not support any transport protocal to stream data but we can use websockets.
+
+DGS has wrapper for websocket for streaming data.
+
+Steps:
+
+1.Add pom dependency .
+	<dependency>
+		<groupId>com.netflix.graphql.dgs</groupId>
+		<artifactId>graphql-dgs-subscriptions-websockets-autoconfigure</artifactId>
+		<version>3.1.0</version>
+		<scope>runtime</scope>
+	</dependency>
+
+
+2.add schema configuration
+#Streaming
+type Subscription {
+    stocks: Stock
+}
+type Stock {
+    name:String
+    price:Float
+}
+
+....
+package com.hcl.dgs.data.model;
+
+public class Stock {
+    private final String name;
+    private final float price;
+
+    public Stock(String name, float price) {
+        this.name = name;
+        this.price = price;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+}
+
+package com.hcl.dgs.data.streaming.subscription;
+
+import com.hcl.dgs.data.model.Stock;
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsSubscription;
+import reactor.core.publisher.Flux;
+
+import java.time.Duration;
+
+@DgsComponent
+public class StreamingFetcher {
+
+    @DgsSubscription(field = "stocks")
+    //@DgsData(parentType = "Mutation")
+    public Flux<Stock> flowStocks() {
+        return Flux.interval(Duration.ofSeconds(1)).map(t -> new Stock("NFLX", 500 + t));
+    }
+}
+Test Using Altair Client:
+
+http://localhost:8080/graphql
+
+ws://localhost:8080/subscriptions
+
+Request:
+subscription {
+  stocks {
+    name
+    price
+  }
+}
+
+Response:
+
+{ "data": { "stocks": { "name": "NFLX", "price": 582 } }, "errors": [] }
+..............................................................................................
+			Advanced Data Fetching :Async Fetching
+.............................................................................................
+
+/posts
+/posts/1/comments
+
+{
+  posts {
+    id
+    comments {
+      title
+    }
+  } 
+}
+
+N+1 : Problem:
+ For each Parent query, child query is called n of times
+ for 1 record it may call N nested calls
+
+lets assume
+ 50 movies, each movie has directors
+
+ 50 movies =>single call
+  directors 50 call  
+ >51 call.
+
+we have make one call for movie and another call for director.
+
+ ->Data Loaders
+
+
+Data Loader:
+ It is class annotated with @DgsDataLoader(name = "directors").
+ Which implements interfaces org.dataloader.BatchLoader / org.dataloader.MappedBatchLoader
+ having method called load method
+
+load method  returns
+CompletionStage<List<Director>> ->Async Type
+logic
+CompletableFuture.supplyAsync(() -> directorServiceClient.loadDirectors(keys));
+..............................................................................................
+
+Async data loading:Simple Pattern
+
+type Query {
+   
+    #async loading
+    loadAsync:Int
+}
+package com.hcl.dgs.data.fetcher.async;
+
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsQuery;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
+@DgsComponent
+public class AsyncDataFetcher {
+
+    @DgsQuery
+    public CompletableFuture<Integer> loadAsync() {
+        //async logic
+        System.out.println("Entry concurrent1");
+        CompletableFuture<Integer> stringCompletableFuture = CompletableFuture.supplyAsync(() -> {
+            try {
+                TimeUnit.MILLISECONDS.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Done concurrent thing 1");
+            return 100;
+        });
+        System.out.println("Exit concurrent1");
+
+        return stringCompletableFuture;
+    }
+}
+.............................................................................................
+				Data loaders -DataFetchingEnvironment
+
+
+How to implement  data Loader?
+
+BatchLoader<ID,Actor> 
+
+@DgsDataLoader(name="actordataloader")
+public class ActorsDataLoader implements BatchLoader<String,Object> {
+
+ public CompletionStage<List<Object>> load(List<String> keys){
+		
+     return CompleteableFuture.supplyAsync(()->actorService.loadActors(keys));
+ }
+}
+MappedBatcLoader<String,Object> =>Which creates Map of key/values for a "Set of values
+
+@DgsDataLoader(name="actordataloader")
+public class ActorsDataLoader implements MappedBatchLoader<String,Object> {
+
+ public CompletionStage<Map<String,Object>> load(Set<String> keys){
+		
+     return CompleteableFuture.supplyAsync(()->actorService.loadActors(keys));
+ }
+}
+
+How to attach Data Loader with DataFetcher.
+
+
+DataFetchingEnviroment Object has apis
+
+dfe.getDataLoader(String loaderName)
+
+dfe.getDataLoader(DataLoader.class)
+
+The DgsDataFetchingEnvironment gives access to the context, the query itself, data loaders, and the source object. The source object is the object that contains the field. For this example, the source is the Show object, which you can use to get the show's identifier to use in the query for actors.
+
+DgsDataFetchingEnvironment methods:
+1.getDataLoader
+2.getSource - which returns Parent Field Object
+
+  {
+    shows {
+      title
+      reviews {
+        rating
+      }
+    }
+     
+  }
+3.getArguments
+   To read input parameters-  eq to @InputArgument
+
+4.getContext
+
+...
+
+implementations:
+
+type Query {
+    #loader
+    messageFromBatchLoader:String
+}
+
+package com.hcl.dgs.data.loader;
+
+import com.netflix.graphql.dgs.DgsDataLoader;
+import org.dataloader.BatchLoader;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.stream.Collectors;
+
+@DgsDataLoader(name = "messages")
+public class MessageDataLoader implements BatchLoader<String, String> {
+    @Override
+    public CompletionStage<List<String>> load(List<String> keys) {
+        return CompletableFuture.supplyAsync(() -> keys.stream().map(key -> "hello, " + key + "!").collect(Collectors.toList()));
+    }
+}
+
+......
+
+package com.hcl.dgs.data.fetcher.async;
+
+import com.netflix.graphql.dgs.DgsComponent;
+import com.netflix.graphql.dgs.DgsData;
+import graphql.schema.DataFetchingEnvironment;
+import org.dataloader.DataLoader;
+
+import java.util.concurrent.CompletableFuture;
+
+@DgsComponent
+public class MessageDataLoaderFetcher {
+
+    @DgsData(parentType = "Query", field = "messageFromBatchLoader")
+    public CompletableFuture<String> getMessage(DataFetchingEnvironment env) {
+        DataLoader<String, String> dataLoader = env.getDataLoader("messages");
+        return dataLoader.load("Subramanian");
+    }
+}
+.............................................................................................
+				Directives
+............................................................................................
+
+Looks like meta code which can injected in schema for declarative models
+
+@include(if: Boolean) Only include this field in the result if the argument is true.
+@skip(if: Boolean) Skip this field if the argument is true.
+
+
+query usersAndPost($id: ID, $withPosts: Boolean!) {
+  userById(id: $id) {
+    name
+    posts @include(if: $withPosts) {
+      id
+    }
+  }
+}
+Query Variables
+{
+  "id": "1",
+  "withPosts": false
+}
+
+{
+  "data": {
+    "userById": {
+      "name": "Leanne Graham"
+    }
+  }
+}
+...
+
+query ShowsAndReviews($withReviews: Boolean!) {
+  shows {
+    id
+    title
+    releaseYear
+    reviews @include(if: $withReviews) {
+      username
+      starScore
+    }
+  }
+}
+{
+  "withReviews": true
+}
+.............................................................................................
+				 Schema Federation
+.............................................................................................
+
+Microservices:
+
+Each domain having their own services , each service has its own schema .
+
+Support for Apollo federation directives:
+
+The current implementation supports the following five directives: 
+
+@key, @extends, @external, @provides, and @requires.
+
+@key directive
+
+This directive takes one field argument inside it: the @key field. There are few limitations on how to use @key directives:
+
+Users can define the @key directive only once for a type
+Support for multiple key fields is not currently available.
+Since the @key field acts as a foreign key to resolve entities from the service where it is extended, the field provided as an argument inside the @key directive should be of ID type or have the @id directive on it.
+For example -
+
+type User @key(fields: "id") {
+   id: ID!
+  name: String
+}
+
+@extends directive
+This directive provides support for extended definitions. For example, if the above-defined User type is defined in some other service, you can extend it in Dgraph’s GraphQL service by using the @extends directive, as follows:
+
+type User @key(fields: "id") @extends{
+  id: String! @id @external
+  products: [Product]
+}
+You can also achieve this with the extend keyword; so you have a choice between two types of syntax to extend a type into your Dgraph GraphQL service: extend type User ... or type User @extends ...
+
+extend type User @key(fields: "id"){
+  id: String! @id @external
+  products: [Product]
+}
+
+@external directive
+You use this directive when the given field is not stored in this service. It can only be used on extended type definitions. For example, it is used in the example shown above on the id field of the User type.
+
+@provides directive
+You use this directive on a field that tells the gateway to return a specific fieldset from the base type while fetching the field.
+
+For example -
+
+type Review @key(fields: "id") {
+  product: Product @provides(fields: "name price")
+}
+
+extend type Product @key(fields: "upc") {
+  upc: String @external
+  name: String @external
+  price: Int @external
+}
+
+While fetching Review.product from the review service, and if the name or price is also queried, the gateway will fetch these from the review service itself. So, the review service also resolves these fields, even though both fields are @external.
+
+@requires directive
+You use this directive on a field to annotate the fieldset of the base type. You can use it to develop a query plan where the required fields may not be needed by the client, but the service may need additional information from other services.
+
+For example -
+
+extend type User @key(fields: "id") {
+  id: ID! @external
+  email: String @external
+  reviews: [Review] @requires(fields: "email")
+}
+COPY
+When the gateway fetches user.reviews from the review service, the gateway will get user.email from the User service and provide it as an argument to the _entities query.
+
+Using @requires alone on a field doesn’t make much sense. In cases where you need to use @requires, you should also add some custom logic on that field. You can add such logic using the @lambda or @custom(http: {...}) directives.
+..............................................................................................
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

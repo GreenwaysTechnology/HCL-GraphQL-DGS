@@ -1,0 +1,11 @@
+type Query {
+    skills:[Skill]
+    shows:[Show]
+}
+type Show {
+    name:String
+}
+type Skill {
+    id:ID
+    name:String
+}

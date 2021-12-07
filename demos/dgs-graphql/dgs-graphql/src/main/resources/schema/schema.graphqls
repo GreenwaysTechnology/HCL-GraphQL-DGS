@@ -1,0 +1,137 @@
+#schema defintion
+#Retrerival
+#type Query {
+#    #query methods goes here
+#    #nameoftheapi:ReturnType
+#    hello:String
+#    #nonnull
+#    message:String!
+#    #built in scallars
+#    count:Int
+#    qty:Float
+#    isAvailable:Boolean
+#    id:ID
+#}
+
+#enum
+#type Query {
+#    status:Availability
+#}
+#enum Availability {
+#    INSTOCK
+#    OUTOFSTOCK
+#    NOTSOLD
+#}
+#Object type
+#type Query {
+#    actor:Actor
+#}
+##object type
+#type Actor {
+#    id:ID
+#    name:String
+#    age:Int
+#    address:Address
+#}
+#type Address {
+#    city:String
+#    state:String
+#    country:String
+#}
+
+#params
+#type Query {
+#    message(input:String):String
+#}
+
+#Fragement
+#type Query {
+#    showHero(id:ID,name:String,age:Int):Actor
+#    showVillain(id:ID,name:String,age:Int):Actor
+#}
+#type Actor {
+#    name:String
+#    age:Int
+#    id:ID
+#    address:Address
+#}
+#type Address {
+#    city:String
+#    state:String
+#    country:String
+#}
+#interfaces
+#type Query {
+#    video: Video
+#}
+#
+#interface Video {
+#    title: String
+#}
+#
+#type Movie implements Video {
+#    title: String
+#    length:String
+#}
+#
+#type Show implements Video {
+#    title: String
+#    seasons: Int
+#}
+#type Query {
+#    firstSearchResult: SearchResult
+#}
+#union SearchResult = Photo | Person
+#
+#type Person {
+#    name: String
+#    age: Int
+#    dob:DateTime
+#}
+#
+#type Photo {
+#    height: Int
+#    width: Int
+#    pixel: Long
+#}
+##custom scalar
+#scalar  Long
+##How to write our own custom types
+#scalar  DateTime
+
+#List
+type Query {
+    skills:[Skill]
+    #async loading
+    loadAsync:Int
+    #loader
+    messageFromBatchLoader:String
+}
+#Mutation :Add,update,delete
+type Mutation {
+    addRating(input:RatingInput):Rating
+}
+input RatingInput {
+    title:String
+    stars:Int
+}
+type Rating {
+    avgStars:Int
+}
+
+type Skill {
+    id:ID
+    name:String
+}
+#Streaming
+type Subscription {
+    stocks: Stock
+}
+type Stock {
+    name:String
+    price:Float
+}
+
+
+
+
